@@ -1,0 +1,38 @@
+# model.yaml contains all parameters/settings for the models.
+
+random_seed: 67                     # Seed for RNG
+
+split:
+  train_frac: 0.70                  # % of training data
+  val_frac: 0.15                    # % of validation data
+  strategy: time_based              # Sort by increasing time, prevents leakage
+
+features:
+  variants: [A, B, C]
+
+# Models hyper-params
+models:
+  ridge:
+    alpha: 10.0                     # Ridge regression's regularization strength
+  lgbm:
+    n_estimators: 500               # No of trees / weak models
+    learning_rate: 0.05
+    max_depth: 8                    # Max depth of each tree
+    num_leaves: 64
+    min_child_samples: 20
+    subsample: 0.8                  # Tree trains on 80% of randomly sampled rows
+    colsample_bytree: 0.8           # Tree trains on 80% of randomly sampled columns
+  xgb:
+    n_estimators: 500               # No of trees / weak models
+    learning_rate: 0.05
+    max_depth: 8                    # Max depth of each tree
+    subsample: 0.8                  # Tree trains on 80% of randomly sampled rows
+    colsample_bytree: 0.8           # Tree trains on 80% of randomly sampled columns
+    tree_method: hist
+
+# Path directories
+paths:
+  intermediate: "data/intermediate"
+  processed: "data/processed"
+  models: "models"
+  reports: "reports"

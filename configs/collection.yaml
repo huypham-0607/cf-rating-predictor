@@ -1,0 +1,21 @@
+# collection.yaml serves as a holder for configurations values
+# instead of hardcoding directly into the source file.
+#
+# This way we can tune settings without having to directly touch
+# the source code.
+
+api:
+  base_url: "https://codeforces.com/api"
+  rate_limit_delay: 2.0                       # Seconds between requests
+  max_retries: 5
+  backoff_base: 2.0                           # wait = backoff_base ^ attempt_number
+  timeout: 30                                 # HTTP request timeout in seconds
+
+output:
+  raw_dir: "data/raw"                         # Where to store raw data
+
+scraping:
+  enabled: false                              # Set to true to scrape time/memory limits
+  delay: 2.5                                  # Seconds between page requests
+  raw_dir: "data/raw/problem_pages"           # Where to store scraped data
+  max_retries: 3
