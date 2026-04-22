@@ -10,8 +10,8 @@ Endpoints:
 
 import json
 import time
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime, timezone
 
 import requests
 import yaml
@@ -20,12 +20,12 @@ from src.utils import get_logger
 
 logger = get_logger(__name__)
 
-_CFG_PATH = Path("cfg/collection.yaml")
+_CFG_PATH = Path("configs/collection.yaml")
 
 # Loading config collection.yaml into a dictionary
 def _load_cfg() -> dict:
     with open (_CFG_PATH) as f:
-        return yaml.safeload(f)
+        return yaml.safe_load(f)
 
 class CodeforcesAPICollector:
     BASE_URL = "https://codeforces.com/api"
@@ -59,7 +59,7 @@ class CodeforcesAPICollector:
         data = self._get("problemset.problems")
         self._save(data, dest)
         logger.info(
-            "Save %d problems and %d statistics records to %s",
+            "Saved %d problems and %d statistics records to %s",
             len(data.get("result", {}).get("problems", [])),
             len(data.get("result", {}).get("problemStatistics", [])),
             dest,
@@ -93,7 +93,7 @@ class CodeforcesAPICollector:
                 resp.raise_for_status()
                 data = resp.json()
                 if data.get("status") != "OK":
-                    raise ValueError(f"API returned status = {data.get("status")} : {data.get("comment")}")
+                    raise ValueError(f"API returned status = {data.get('status')} : {data.get('comment')}")
                 time.sleep(self.rate_limit_delay)
                 return data
             except (requests.RequestException, ValueError) as exc:
@@ -104,6 +104,6 @@ class CodeforcesAPICollector:
     @staticmethod
     def _save(data:dict, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        meta = {"fetched_at": datetime.now(datetime.timezone.utc).isoformat()}
+        meta = {"fetched_at": datetime.now(timezone.utc).isoformat()}
         with open(path, "w") as f:
             json.dump({"_meta": meta, **data}, f, indent=2)

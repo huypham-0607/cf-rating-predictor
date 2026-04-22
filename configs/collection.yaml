@@ -13,9 +13,3 @@ api:
 
 output:
   raw_dir: "data/raw"                         # Where to store raw data
-
-scraping:
-  enabled: false                              # Set to true to scrape time/memory limits
-  delay: 2.5                                  # Seconds between page requests
-  raw_dir: "data/raw/problem_pages"           # Where to store scraped data
-  max_retries: 3
