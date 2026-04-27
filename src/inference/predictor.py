@@ -17,6 +17,7 @@ import time as _time
 import joblib
 import numpy as np
 import pandas as pd
+import math
 
 from src.utils import get_logger
 
@@ -77,10 +78,10 @@ class RatingPredictor:
         X = X.reindex(columns=feature_names, fill_value=0)
 
         raw_pred = float(model.predict(X.values)[0])
-        rounded = int(round(raw_pred / 100) * 100)
+        rounded = int(math.floor(raw_pred / 100) * 100)
         rounded = max(800, min(3500, rounded))
 
-        band = next((label for lo, hi, label in RATING_BANDS if lo <= rounded < hi), "Unknown")
+        band = next((label for lo, hi, label in RATING_BANDS if lo <= raw_pred < hi), "Unknown")
 
         top_features = self._top_features(model, feature_names)
 
