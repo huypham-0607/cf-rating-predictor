@@ -73,7 +73,7 @@ def build_feature_pipeline(
     cfg: dict | None = None,
 ) -> None:
     """
-    Runs the full feature engineering pipeline for all three variants.
+    Runs the full feature pipeline for all three variants.
     Saves:
       data/processed/{split}_{variant}.parquet   — X (features) + y (rating)
       models/feature_encoder_{variant}.joblib    — fitted FeatureEncoder
