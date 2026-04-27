@@ -169,37 +169,10 @@ def _write_comparison_report(df: pd.DataFrame, reports_dir: Path) -> None:
         f.write("\n".join(lines))
     logger.info("Saved model_comparison.md")
 
-def _write_comparison_report(df: pd.DataFrame, reports_dir: Path) -> None:
-    lines = [
-        "# Model Comparison Report",
-        "",
-        "Evaluated on held-out **test set** (most recent 15% of contests by start time).",
-        "",
-        "## All Models",
-        "",
-        "| Model | Variant | MAE | RMSE | R² | Within±100 | Within±200 |",
-        "|---|---|---|---|---|---|---|",
-    ]
-    for _, r in df.sort_values("MAE").iterrows():
-        lines.append(
-            f"| {r['model']} | {r['variant']} | {r['MAE']} | {r['RMSE']} | {r['R2']} "
-            f"| {r['within_100']:.2%} | {r['within_200']:.2%} |"
-        )
-
-    # Best model callout
-    best = df.sort_values("MAE").iloc[0]
-    lines += [
-        "",
-        f"**Best model:** `{best['model']}` variant **{best['variant']}** — MAE={best['MAE']}, "
-        f"Within±100={best['within_100']:.1%}, Within±200={best['within_200']:.1%}",
-        "",
-    ]
-
-    with open(reports_dir / "model_comparison.md", "w") as f:
-        f.write("\n".join(lines))
-    logger.info("Saved model_comparison.md")
-
 def _write_feature_importance(models_dir: Path, processed_dir: Path, reports_dir: Path) -> None:
+    """
+    Write a report for feature importance for tree-based models.
+    """
     for variant in VARIANTS:
         fi_path = processed_dir / f"feature_names_{variant}.json"
         if not fi_path.exists():
