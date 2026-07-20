@@ -1,0 +1,152 @@
+{
+  "dataset": {
+    "total_problems": 11155,
+    "labeled_problems": 10864,
+    "unlabeled_problems": 291,
+    "contests_total": 1973,
+    "collection_date": "2026-04-22T02:51:52.592266+00:00"
+  },
+  "split": {
+    "strategy": "chronological, contest-grouped (70/15/15 by contest count)",
+    "train": {
+      "problems": 6961,
+      "contests": 1351
+    },
+    "val": {
+      "problems": 1844,
+      "contests": 289
+    },
+    "test": {
+      "problems": 2059,
+      "contests": 291
+    }
+  },
+  "models": {
+    "mean_A": {
+      "mae": 689.28,
+      "rmse": 811.68,
+      "r2": -0.0001,
+      "med_ae": 680.05,
+      "within_100": 0.0884,
+      "within_200": 0.1632
+    },
+    "median_A": {
+      "mae": 687.37,
+      "rmse": 815.01,
+      "r2": -0.0083,
+      "med_ae": 700.0,
+      "within_100": 0.1282,
+      "within_200": 0.1967
+    },
+    "ridge_A": {
+      "mae": 332.45,
+      "rmse": 431.94,
+      "r2": 0.7168,
+      "med_ae": 249.31,
+      "within_100": 0.1598,
+      "within_200": 0.3351
+    },
+    "lgbm_A": {
+      "mae": 238.28,
+      "rmse": 340.89,
+      "r2": 0.8236,
+      "med_ae": 171.85,
+      "within_100": 0.3409,
+      "within_200": 0.5595
+    },
+    "xgb_A": {
+      "mae": 240.41,
+      "rmse": 365.38,
+      "r2": 0.7973,
+      "med_ae": 160.73,
+      "within_100": 0.3643,
+      "within_200": 0.5566
+    },
+    "mean_B": {
+      "mae": 689.28,
+      "rmse": 811.68,
+      "r2": -0.0001,
+      "med_ae": 680.05,
+      "within_100": 0.0884,
+      "within_200": 0.1632
+    },
+    "median_B": {
+      "mae": 687.37,
+      "rmse": 815.01,
+      "r2": -0.0083,
+      "med_ae": 700.0,
+      "within_100": 0.1282,
+      "within_200": 0.1967
+    },
+    "ridge_B": {
+      "mae": 322.8,
+      "rmse": 419.56,
+      "r2": 0.7328,
+      "med_ae": 268.26,
+      "within_100": 0.1948,
+      "within_200": 0.3847
+    },
+    "lgbm_B": {
+      "mae": 241.01,
+      "rmse": 332.7,
+      "r2": 0.832,
+      "med_ae": 179.01,
+      "within_100": 0.3181,
+      "within_200": 0.5454
+    },
+    "xgb_B": {
+      "mae": 228.16,
+      "rmse": 322.65,
+      "r2": 0.842,
+      "med_ae": 167.0,
+      "within_100": 0.338,
+      "within_200": 0.5614
+    },
+    "mean_C": {
+      "mae": 689.28,
+      "rmse": 811.68,
+      "r2": -0.0001,
+      "med_ae": 680.05,
+      "within_100": 0.0884,
+      "within_200": 0.1632
+    },
+    "median_C": {
+      "mae": 687.37,
+      "rmse": 815.01,
+      "r2": -0.0083,
+      "med_ae": 700.0,
+      "within_100": 0.1282,
+      "within_200": 0.1967
+    },
+    "ridge_C": {
+      "mae": 231.78,
+      "rmse": 283.93,
+      "r2": 0.8776,
+      "med_ae": 208.6,
+      "within_100": 0.2292,
+      "within_200": 0.4862
+    },
+    "lgbm_C": {
+      "mae": 138.46,
+      "rmse": 187.01,
+      "r2": 0.9469,
+      "med_ae": 109.62,
+      "within_100": 0.4701,
+      "within_200": 0.7625
+    },
+    "xgb_C": {
+      "mae": 143.65,
+      "rmse": 191.48,
+      "r2": 0.9443,
+      "med_ae": 113.35,
+      "within_100": 0.4546,
+      "within_200": 0.7416
+    }
+  },
+  "best_model": {
+    "name": "lgbm_C",
+    "mae": 138.46,
+    "within_100": 0.4701,
+    "within_200": 0.7625
+  }
+}

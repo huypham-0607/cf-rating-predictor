@@ -1,7 +1,7 @@
 """
 Tree ensemble model builders and the full training loop.
 
-Trains 9 model artifacts = 3 variants (A/B/C) x 3 model types (ridge/lgbm/xgb).
+Trains 15 model artifacts = 3 variants (A/B/C) x 5 model types (mean/median/ridge/lgbm/xgb).
 Each artifact is saved as models/{model_name}_{variant}.joblib with a JSON sidecar
 containing training metadata and validation MAE.
 """

@@ -59,15 +59,19 @@ def evaluate_all_models(
     intermediate_dir: str | Path = "data/intermediate",
     models_dir: str | Path = "models",
     reports_dir: str | Path = "reports",
+    raw_dir: str | Path = "data/raw",
 ) -> pd.DataFrame:
     processed_dir = Path(processed_dir)
     intermediate_dir = Path(intermediate_dir)
     models_dir = Path(models_dir)
     reports_dir = Path(reports_dir)
+    raw_dir = Path(raw_dir)
     reports_dir.mkdir(parents=True, exist_ok=True)
 
     # Load the raw labeled data (for breakdown context columns)
     labeled = pd.read_parquet(intermediate_dir / "labeled.parquet")
+    unlabeled_path = intermediate_dir / "unlabeled.parquet"
+    unlabeled = pd.read_parquet(unlabeled_path) if unlabeled_path.exists() else labeled.iloc[0:0]
 
     all_results = []
     error_rows = []
@@ -136,6 +140,9 @@ def evaluate_all_models(
     # Update best_model.json with test metrics
     _update_best_model(results_df, models_dir)
 
+    # Single machine-readable snapshot of dataset/split/model numbers
+    _write_metrics_json(results_df, labeled, unlabeled, processed_dir, raw_dir, reports_dir)
+
     logger.info("Evaluation complete. Reports saved to %s", reports_dir)
     return results_df
 
@@ -197,6 +204,73 @@ def _write_feature_importance(models_dir: Path, processed_dir: Path, reports_dir
             }).sort_values("importance", ascending=False)
 
             fi_df.to_csv(reports_dir / f"feature_importance_{model_name}_{variant}.csv", index=False)
+
+
+def _write_metrics_json(
+    results_df: pd.DataFrame,
+    labeled: pd.DataFrame,
+    unlabeled: pd.DataFrame,
+    processed_dir: Path,
+    raw_dir: Path,
+    reports_dir: Path,
+) -> None:
+    """
+    Single machine-readable snapshot of dataset/split/model numbers — the README
+    and experiment report read from this file instead of hand-copied terminal output.
+    """
+    collection_date = None
+    problems_meta_path = raw_dir / "problems_api.json"
+    if problems_meta_path.exists():
+        with open(problems_meta_path) as f:
+            collection_date = json.load(f).get("_meta", {}).get("fetched_at")
+
+    splits = {}
+    for name in ("train", "val", "test"):
+        split_df = pd.read_parquet(processed_dir / f"split_index_{name}.parquet")
+        splits[name] = {
+            "problems": int(len(split_df)),
+            "contests": int(split_df["contest_id"].nunique()),
+        }
+
+    models = {
+        f"{r['model']}_{r['variant']}": {
+            "mae": r["MAE"],
+            "rmse": r["RMSE"],
+            "r2": r["R2"],
+            "med_ae": r["MedAE"],
+            "within_100": r["within_100"],
+            "within_200": r["within_200"],
+        }
+        for _, r in results_df.iterrows()
+    }
+
+    best = results_df.sort_values("MAE").iloc[0]
+    all_contest_ids = pd.concat([labeled["contest_id"], unlabeled["contest_id"]])
+
+    payload = {
+        "dataset": {
+            "total_problems": int(len(labeled) + len(unlabeled)),
+            "labeled_problems": int(len(labeled)),
+            "unlabeled_problems": int(len(unlabeled)),
+            "contests_total": int(all_contest_ids.nunique()),
+            "collection_date": collection_date,
+        },
+        "split": {
+            "strategy": "chronological, contest-grouped (70/15/15 by contest count)",
+            **splits,
+        },
+        "models": models,
+        "best_model": {
+            "name": f"{best['model']}_{best['variant']}",
+            "mae": best["MAE"],
+            "within_100": best["within_100"],
+            "within_200": best["within_200"],
+        },
+    }
+
+    with open(reports_dir / "metrics.json", "w") as f:
+        json.dump(payload, f, indent=2)
+    logger.info("Saved metrics.json")
 
 
 def _update_best_model(results_df: pd.DataFrame, models_dir: Path) -> None:
